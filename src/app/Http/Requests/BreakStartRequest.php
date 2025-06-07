@@ -11,7 +11,7 @@ class BreakStartRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,5 +24,16 @@ class BreakStartRequest extends FormRequest
         return [
             //
         ];
+    }
+
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $user = auth()->user();
+            if ($user->currentStatus() !== 'working') {
+                $validator->errors()->add('status', '出勤中ではありません。');
+            }
+        });
     }
 }

@@ -11,7 +11,7 @@ class CheckOutRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,5 +24,21 @@ class CheckOutRequest extends FormRequest
         return [
             //
         ];
+    }
+
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $user = auth()->user();
+            if ($user->currentStatus() !== 'working') {
+                $validator->errors()->add('status', '出勤中ではありません。');
+            }
+
+            $attendance = $user->todayAttendance();
+            if ($attendance && $attendance->check_out) {
+                $validator->errors()->add('attendance', '本日は既に退勤済みです。');
+            }
+        });
     }
 }

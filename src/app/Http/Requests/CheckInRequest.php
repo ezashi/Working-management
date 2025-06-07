@@ -11,7 +11,7 @@ class CheckInRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,5 +24,20 @@ class CheckInRequest extends FormRequest
         return [
             //
         ];
+    }
+
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $user = auth()->user();
+            if ($user->currentStatus() !== 'not_working') {
+                $validator->errors()->add('status', '既に出勤しています。');
+            }
+
+            if ($user->todayAttendance()) {
+                $validator->errors()->add('attendance', '本日は既に出勤済みです。');
+            }
+        });
     }
 }
