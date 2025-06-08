@@ -9,13 +9,16 @@
   </head>
   <body>
     <header>
-      <a href="{{ route('attendance') }}" class="navbar-brand">
+      <a href="{{ route('attendance') }}">
           <img src="{{ asset('image/App Logo.svg') }}" alt="coachtech logo->attendance"/>
       </a>
       @auth
-        <a href="{{ route('attendance') }}">勤怠</a>
+        <!-- <a href="{{ route('attendance') }}">勤怠</a>
         <a href="{{ route('attendance.list') }}">勤怠一覧</a>
-        <a href="{{ route('stamp_correction_request.list') }}">申請</a>
+        <a href="{{ route('stamp_correction_request.list') }}">申請</a> -->
+        <p>勤怠</p>
+        <p>勤怠一覧</p>
+        <p>申請</p>
         <form action="{{ route('logout') }}" method="POST">
           @csrf
           <button type="submit">ログアウト</button>

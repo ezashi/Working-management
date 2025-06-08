@@ -1,6 +1,8 @@
 @extends('layouts.app')
 @section('content')
-<div>会員登録</div>
+<div>
+  <h2>会員登録</h2>
+</div>
 <form method="POST" action="{{ route('register') }}">
   @csrf
   <div class="form-group">
