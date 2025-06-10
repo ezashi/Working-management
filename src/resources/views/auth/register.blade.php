@@ -38,3 +38,4 @@
   </div>
 </form>
 <a href="{{ route('login') }}">ログインはこちら</a>
+@endsection
