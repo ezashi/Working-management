@@ -9,6 +9,7 @@ use App\Http\Requests\CheckOutRequest;
 use App\Http\Requests\BreakStartRequest;
 use App\Http\Requests\BreakEndRequest;
 use App\Http\Requests\AttendanceUpdateRequest;
+use App\Http\Requests\ModificationRequestStoreRequest;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
