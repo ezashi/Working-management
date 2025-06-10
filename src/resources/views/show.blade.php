@@ -9,7 +9,7 @@
     </p>
     <p>
       <span>日付:</span>
-      {{ $attendance->date->format('Y年m月d日') }}
+      {{ $attendance->date->format('Y年   m月d日') }}
     </p>
   </div>
 

@@ -49,6 +49,7 @@ class AttendanceController extends Controller
     return redirect()->route('attendance')->with('success', 'お疲れ様でした。');
   }
 
+
   public function breakStart(BreakStartRequest $request)
   {
     $attendance = auth()->user()->todayAttendance();
@@ -76,5 +77,46 @@ class AttendanceController extends Controller
     $attendance->update(['status' => 'working']);
 
     return redirect()->route('attendance')->with('success', '休憩を終了しました。');
+  }
+
+
+
+  public function list(Request $request)
+  {
+    $user = auth()->user();
+    $month = $request->get('month', now()->format('Y-m'));
+    $date = Carbon::parse($month . '-01');
+
+    $attendances = $user->attendances()
+    ->whereYear('date', $date->year)
+    ->whereMonth('date', $date->month)
+    ->orderBy('date', 'desc')
+    ->with('breaks')
+    ->get();
+
+    $prevMonth = $date->copy()->subMonth()->format('Y-m');
+    $nextMonth = $date->copy()->addMonth()->format('Y-m');
+
+    return view('list', compact('attendances', 'month', 'prevMonth', 'nextMonth'));
+  }
+
+
+
+  public function show(Attendance $request)
+  {
+    dd([
+      'attendance_user_id' => $attendance->user_id,
+      'auth_id' => auth()->id(),
+      'auth_user' => auth()->user(),
+      'is_admin' => auth()->user() ? auth()->user()->isAdmin() : null,
+      'comparison' => $attendance->user_id === auth()->id(),
+    ]);
+    if ($attendance->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
+      abort(403);
+    }
+
+    $attendance->load('breaks');
+
+    return view('attendances.show', compact('attendance'));
   }
 }
