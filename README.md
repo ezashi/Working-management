@@ -53,9 +53,9 @@ LOG_LEVEL=debug
 DB_CONNECTION=mysql
 DB_HOST=mysql
 DB_PORT=3306
-DB_DATABASE=working_management_db
-DB_USERNAME=working_user
-DB_PASSWORD=working_pass
+DB_DATABASE=laravel_db
+DB_USERNAME=laravel_user
+DB_PASSWORD=laravel_pass
 
 BROADCAST_DRIVER=log
 CACHE_DRIVER=redis
