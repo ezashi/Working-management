@@ -57,6 +57,10 @@ class FortifyServiceProvider extends ServiceProvider
             if ($user && \Hash::check($request->password, $user->password)) {
                 return $user;
             }
+
+            throw ValidationException::withMessages([
+                'email' => ['ログイン情報が登録されていません'],
+            ]);
         });
 
         // ログアウト後、ログイン画面にリダイレクト
