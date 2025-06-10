@@ -41,18 +41,6 @@ class FortifyServiceProvider extends ServiceProvider
             return view('auth.register');
         });
 
-        Fortify::authenticateUsing(function (Request $request) {
-            $user = \App\Models\User::where('email', $request->email)->first();
-
-            if ($user && \Hash::check($request->password, $user->password)) {
-                return $user;
-            }
-
-            throw ValidationException::withMessages([
-                'email' => ['ログイン情報が登録されていません'],
-            ]);
-        });
-
         RateLimiter::for('login', function (Request $request) {
             $email = (string) $request->email;
 
