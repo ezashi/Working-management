@@ -52,5 +52,11 @@ class FortifyServiceProvider extends ServiceProvider
                 'email' => ['ログイン情報が登録されていません'],
             ]);
         });
+
+        RateLimiter::for('login', function (Request $request) {
+            $email = (string) $request->email;
+
+            return Limit::perMinute(5)->by($email.$request->ip());
+        });
     }
 }
