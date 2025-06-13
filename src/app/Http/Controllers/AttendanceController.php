@@ -120,4 +120,27 @@ class AttendanceController extends Controller
 
     return view('attendances.show', compact('attendance'));
   }
+
+
+  public function update(AttendanceUpdateRequest $request, Attendance $attendance)
+  {
+    if ($attendance->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
+      abort(403);
+    }
+
+    $attendance->update($request->only(['check_in', 'check_out', 'note']));
+
+    if ($request->has('breaks')) {
+      $attendance->breaks()->delete();
+      foreach ($request->breaks as $break) {
+        $attendance->breaks()->create($break);
+      }
+    }
+
+    if (auth()->user()->isAdmin()) {
+      return redirect()->route('admin.attendances.index')->with('success', '勤怠情報を更新しました。');
+    }
+
+    return redirect()->route('attendances.show', $attendance)->with('success', '*申請待ちのため修正はできません。');
+    }
 }
