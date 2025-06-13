@@ -30,7 +30,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/attendance/{id}', [AttendanceController::class, 'update'])->name('attendance.update');
 
     // 申請画面
-    // Route::get('/stamp_correction_request/list', [ModificationRequestController::class, 'index'])->name('stamp_correction_request.list');
+    // Route::get('/stamp_correction_request/list', [ModificationRequestController::class, 'index'])->name('correction-request-list');
 });
 
 // 管理者ログイン

@@ -128,18 +128,16 @@ class AttendanceController extends Controller
       abort(403);
     }
 
-    $attendance->update($request->only(['check_in', 'check_out', 'note']));
-
-    if ($request->has('breaks')) {
-      $attendance->breaks()->delete();
-      foreach ($request->breaks as $break) {
-        $attendance->breaks()->create($break);
-      }
-    }
-
-    if (auth()->user()->isAdmin()) {
-      return redirect()->route('admin.attendances.index')->with('success', '勤怠情報を更新しました。');
-    }
+    $modificationRequest = ModificationRequest::create([
+      'attendance_id' => $attendance->id,
+      'user_id' => auth()->id(),
+      'modified_check_in' => $request->check_in,
+      'modified_check_out' => $request->check_out,
+      'modified_breaks' => $this->processBreaks($request->breaks),
+      'modified_note' => $request->note,
+      'note' => $request->note,
+      'status' => 'pending',
+    ]);
 
     return redirect()->route('attendances.show', $attendance)->with('success', '*申請待ちのため修正はできません。');
     }
