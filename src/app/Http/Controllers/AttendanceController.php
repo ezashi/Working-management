@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Attendance;
+use Carbon\Carbon;
 use App\Models\BreakTime;
+use App\Models\Attendance;
+use Illuminate\Http\Request;
+use App\Models\ModificationRequest;
 use App\Http\Requests\CheckInRequest;
 use App\Http\Requests\CheckOutRequest;
-use App\Http\Requests\BreakStartRequest;
 use App\Http\Requests\BreakEndRequest;
-use App\Http\Requests\AttendanceUpdateRequest;
-use App\Http\Requests\ModificationRequestStoreRequest;
-use Illuminate\Http\Request;
-use Carbon\Carbon;
+use App\Http\Requests\BreakStartRequest;
+use App\Http\Requests\AttendanceModificationRequest;
 
 class AttendanceController extends Controller
 {
@@ -63,7 +63,7 @@ class AttendanceController extends Controller
     $attendance->update(['status' => 'break']);
 
     return redirect()->route('attendance')->with('success', '休憩を開始しました。');
-  }
+    }
 
 
   public function breakEnd(BreakEndRequest $request)
@@ -118,6 +118,10 @@ class AttendanceController extends Controller
 
     $attendance->load('breaks');
 
+    $hasPendingRequest = $attendance->modificationRequests()
+      ->where('status', 'pending')
+      ->exists();
+
     return view('attendances.show', compact('attendance'));
   }
 
@@ -128,17 +132,46 @@ class AttendanceController extends Controller
       abort(403);
     }
 
-    $modificationRequest = ModificationRequest::create([
-      'attendance_id' => $attendance->id,
-      'user_id' => auth()->id(),
-      'modified_check_in' => $request->check_in,
-      'modified_check_out' => $request->check_out,
-      'modified_breaks' => $this->processBreaks($request->breaks),
-      'modified_note' => $request->note,
+    if (!auth()->user()->isAdmin()) {
+      if ($attendance->modificationRequests()->where('status', 'pending')->exists()) {
+        return redirect()->route('attendances.show', $attendance)
+          ->with('error', '*承認待ちのため修正はできません。');
+      }
+
+      $modificationRequest = ModificationRequest::create([
+        'attendance_id' => $attendance->id,
+        'user_id' => auth()->id(),
+        'check_in' => $request->check_in,
+        'check_out' => $request->check_out,
+        'breaks' => $this->processBreaks($request->breaks),
+        'note' => $request->note,
+        'status' => 'pending',
+      ]);
+
+      return redirect()->route('attendances.show', $attendance)
+        ->with('error', '*承認待ちのため修正はできません。');
+    }
+
+    $attendance->update([
+      'check_in' => $request->check_in,
+      'check_out' => $request->check_out,
       'note' => $request->note,
-      'status' => 'pending',
     ]);
 
-    return redirect()->route('attendances.show', $attendance)->with('success', '*申請待ちのため修正はできません。');
+    if ($request->has('breaks')) {
+      $attendance->breaks()->delete();
+
+      foreach ($request->breaks as $break) {
+        if (!empty($break['start_time'])) {
+          $attendance->breaks()->create([
+            'start_time' => $break['start_time'],
+            'end_time' => $break['end_time'] ?? null,
+          ]);
+        }
+      }
     }
+
+    return redirect()->route('attendances.show', $attendance)
+      ->with('success', '承認済み');
+  }
 }

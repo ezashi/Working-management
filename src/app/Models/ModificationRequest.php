@@ -18,18 +18,17 @@ class ModificationRequest extends Model
     protected $fillable = [
         'attendance_id',
         'user_id',
-        'modified_check_in',
-        'modified_check_out',
-        'modified_breaks',
-        'modified_note',
-        'reason',
+        'check_in',
+        'check_out',
+        'breaks',
+        'note',
         'status',
         'approved_by',
         'approved_at',
     ];
 
     protected $casts = [
-        'modified_breaks' => 'array',
+        'breaks' => 'array',
         'approved_at' => 'datetime',
     ];
 
