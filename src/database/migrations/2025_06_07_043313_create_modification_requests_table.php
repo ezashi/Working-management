@@ -20,9 +20,9 @@ return new class extends Migration
             $table->json('modified_breaks')->nullable();
             $table->text('modified_note')->nullable();
             $table->text('reason');
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->foreignId('approved_by')->nullable()->constrained('users');
-            $table->timestamp('approved_at')->nullable();
+            $table->enum('status', ['pending', 'approval', 'rejected'])->default('pending');
+            $table->foreignId('approval_by')->nullable()->constrained('users');
+            $table->timestamp('approval_at')->nullable();
             $table->timestamps();
         });
     }

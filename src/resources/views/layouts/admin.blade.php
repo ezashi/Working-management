@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>勤怠管理</title>
+    <title>勤怠管理 - 管理者</title>
     <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}" />
   </head>
   <body>
     <header>
-      <a href="{{ route('attendance') }}">
+      <a href="{{ route('admin.attendance') }}">
           <img src="{{ asset('image/App Logo.svg') }}" alt="coachtech logo->attendance"/>
       </a>
       @auth
-        <a href="{{ route('attendance') }}">勤怠</a>
-        <a href="{{ route('attendance.list') }}">勤怠一覧</a>
-        <a href="{{ route('correction.request.index') }}">申請</a>
-        <form action="{{ route('logout') }}" method="POST">
+        <a href="{{ route('admin.attendance') }}">勤怠一覧</a>
+        <a href="{{ route('admin.staff') }}">スタッフ一覧</a>
+        <a href="{{ route('correction.request.index') }}">申請一覧</a>
+        <form action="{{ route('admin.logout') }}" method="POST">
           @csrf
           <button type="submit">ログアウト</button>
         </form>

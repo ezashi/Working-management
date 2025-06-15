@@ -23,13 +23,13 @@ class ModificationRequest extends Model
         'breaks',
         'note',
         'status',
-        'approved_by',
-        'approved_at',
+        'approval_by',
+        'approval_at',
     ];
 
     protected $casts = [
         'breaks' => 'array',
-        'approved_at' => 'datetime',
+        'approval_at' => 'datetime',
     ];
 
 
@@ -46,8 +46,8 @@ class ModificationRequest extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function approver()
+    public function approval()
     {
-        return $this->belongsTo(User::class, 'approved_by');
+        return $this->belongsTo(User::class, 'approval_by');
     }
 }

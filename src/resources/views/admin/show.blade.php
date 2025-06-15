@@ -1,11 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 @section('content')
 <div>
   <h2>勤務詳細</h2>
-  @if($hasPendingRequest)
-    <div>*承認待ちのため修正はできません。</div>
-  @endif
-  <form action="{{ route('attendances.update', $attendance }}" method="post">
+  <form action="{{ route('admin.update', $attendance) }}" method="post">
     @csrf
     @method('put')
     <div>
@@ -32,6 +29,7 @@
           <div class="error-message">{{ $message }}</div>
         @enderror
       </div>
+
       <div>
         @foreach($attendance->breaks as $index => $break)
           <h3>休憩{{ $index + 1 }}</h3>
@@ -46,6 +44,7 @@
           @enderror
         @endforeach
       </div>
+
       <div>
         <h3>備考</h3>
         <textarea name="note" id="note">{{ old('note', $attendance->note) }}</textarea>
@@ -54,10 +53,9 @@
         @enderror
       </div>
     </div>
+
     <div>
-      <button type="submit" @if($hasPendingRequest) disabled @endif>
-        修正
-      </button>
+      <button type="submit" @if($hasPendingRequest) disabled @endif>修正</button>
     </div>
   </form>
 </div>

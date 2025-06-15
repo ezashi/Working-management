@@ -26,7 +26,7 @@ class AttendanceController extends Controller
   }
 
 
-  public function checkIn(CheckInRequest $request)
+  public function checkIn(CheckInRequest $inRequest)
   {
     $attendance = Attendance::create([
       'user_id' => auth()->id(),
@@ -39,7 +39,7 @@ class AttendanceController extends Controller
   }
 
 
-  public function checkOut(CheckOutRequest $request)
+  public function checkOut(CheckOutRequest $outRequest)
   {
     $attendance = auth()->user()->todayAttendance();
     $attendance->update([
@@ -51,7 +51,7 @@ class AttendanceController extends Controller
   }
 
 
-  public function breakStart(BreakStartRequest $request)
+  public function breakStart(BreakStartRequest $startRequest)
   {
     $attendance = auth()->user()->todayAttendance();
 
@@ -66,7 +66,7 @@ class AttendanceController extends Controller
     }
 
 
-  public function breakEnd(BreakEndRequest $request)
+  public function breakEnd(BreakEndRequest $endRequest)
   {
     $attendance = auth()->user()->todayAttendance();
     $activeBreak = $attendance->activeBreak();
@@ -103,15 +103,8 @@ class AttendanceController extends Controller
 
 
 
-  public function show(Attendance $request)
+  public function show(Attendance $attendance)
   {
-    dd([
-      'attendance_user_id' => $attendance->user_id,
-      'auth_id' => auth()->id(),
-      'auth_user' => auth()->user(),
-      'is_admin' => auth()->user() ? auth()->user()->isAdmin() : null,
-      'comparison' => $attendance->user_id === auth()->id(),
-    ]);
     if ($attendance->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
       abort(403);
     }
@@ -122,7 +115,7 @@ class AttendanceController extends Controller
       ->where('status', 'pending')
       ->exists();
 
-    return view('attendances.show', compact('attendance'));
+    return view('show', compact('attendance'));
   }
 
 

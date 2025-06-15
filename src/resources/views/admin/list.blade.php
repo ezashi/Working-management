@@ -1,11 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 @section('content')
 <div>
-  <h2>勤怠一覧</h2>
+  <h2>{{ $user->name }}さんの勤怠一覧</h2>
   <div>
-    <a href="{{ route('attendance.list', ['month' => $prevMonth]) }}">←前月</a>
-    <span>{{ \Carbon\Carbon::parse($month)->format('Y/m') }}</span>
-    <a href="{{ route('attendance.list', ['month' => $nextMonth]) }}">翌月→</a>
+    <a href="{{ route('admin.list', ['user' => $user, 'month' => $prevMonth]) }}">←前月</a>
+    <span>{{ $date->format('Y/m') }}</span>
+    <a href="{{ route('admin.list', ['user' => $user, 'month' => $nextMonth]) }}">翌月→</a>
   </div>
   <div>
     <table>
@@ -28,7 +28,7 @@
             <td>{{ $attendance->totalBreakTime() ? gmdate('H:i', $attendance->totalBreakTime() * 60) : '' }}</td>
             <td>{{ $attendance->workingHours() ? gmdate('H:i', floor($attendance->workingHours()) * 60) : '' }}</td>
             <td>
-              <a href="{{ route('attendance.show', $attendance) }}">詳細</a>
+              <a href="{{ route('admin.show', $attendance) }}">詳細</a>
             </td>
           </tr>
         @endforeach
